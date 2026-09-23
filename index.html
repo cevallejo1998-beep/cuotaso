@@ -177,10 +177,7 @@ tfoot td{font-weight:650;border-top:1px solid var(--rule);background:#FAFBFB;pos
 </div>
 
 <script type="module">
-/* ══════════════════════════════════════════════════════════
-   PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE
-   Consola de Firebase → Configuración del proyecto → Tus apps → Web
-   ══════════════════════════════════════════════════════════ */
+/* Configuración del proyecto Firebase "cuotas-so" */
 const firebaseConfig = {
   apiKey: "AIzaSyADxQ6aZNxcF-ZklPGY078WiYfYJFgH6Uc",
   authDomain: "cuotas-so.firebaseapp.com",
@@ -280,7 +277,8 @@ function chunkify(part){
   for(const [k,cells] of part.byKey){
     const add=JSON.stringify(cells).length+k.length*2+20;
     if(size+add>CHUNK_BYTES && size>0){ out.push(cur); cur={tot:{},cells:{}}; size=0; }
-    cur.tot[k]=+part.tot[k].toFixed(6); cur.cells[k]=cells; size+=add;
+    const flat=[]; for(const c of cells) flat.push(c[0],c[1],c[2]);
+    cur.tot[k]=+part.tot[k].toFixed(6); cur.cells[k]=flat; size+=add;
   }
   if(size>0) out.push(cur);
   return out;
@@ -291,15 +289,16 @@ function compute(){
   const b=base[level], ed={...saved[level],...local[level]}, sumFF={};
   for(const k in b.cells){
     const mgr = k in ed ? ed[k] : b.tot[k];
-    for(const [ff,sp] of b.cells[k]) sumFF[ff]=(sumFF[ff]||0)+mgr*sp;
+    const a=b.cells[k];
+    for(let i=0;i<a.length;i+=3) sumFF[a[i]]=(sumFF[a[i]]||0)+mgr*a[i+1];
   }
   const fac={};
   for(const ff in base.ibp) fac[ff] = !sumFF[ff] ? 1 : base.ibp[ff]/sumFF[ff];
   const tons={}, iv={};
   for(const k in b.cells){
     const mgr = k in ed ? ed[k] : b.tot[k];
-    let t=0,v=0;
-    for(const [ff,sp,sv] of b.cells[k]){ const f=fac[ff]??1; t+=mgr*sp*f; v+=mgr*sv*f; }
+    const a=b.cells[k]; let t=0,v=0;
+    for(let i=0;i<a.length;i+=3){ const f=fac[a[i]]??1; t+=mgr*a[i+1]*f; v+=mgr*a[i+2]*f; }
     tons[k]=t; iv[k]=v;
   }
   return {tons,iv,ed};
@@ -377,7 +376,7 @@ function draw(){
   for(const k in b.cells){
     const p=k.split(SEP), cat = level==="reg"?p[2]:p[3];
     const mgr = k in ed ? ed[k] : b.tot[k];
-    let sp=0; for(const c of b.cells[k]) sp+=c[1];
+    let sp=0; const ak=b.cells[k]; for(let i=1;i<ak.length;i+=3) sp+=ak[i];
     inCat[cat]=(inCat[cat]||0)+mgr*sp;
     ibpCat[cat]=(ibpCat[cat]||0)+b.tot[k]*sp;
   }
