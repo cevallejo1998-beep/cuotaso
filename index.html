@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajuste de cuota · Sell Out Perú TT</title>
+<style>
+:root{
+  --ink:#14181B; --soft:#5C636B; --paper:#fff; --bg:#EEF0F2;
+  --rule:#D2D7DB; --hair:#E7EAEC;
+  --let:#2E7D4F; --let-bg:#EAF5EE; --let-hd:#D6EBDE;
+  --may:#B45A1E; --may-bg:#FDF0E6; --may-hd:#F8DFC9;
+  --ivlet:#2B5C93; --ivlet-bg:#EAF1F8;
+  --ivmay:#6B3E8F; --ivmay-bg:#F2ECF7;
+  --bad:#9E3423; --bad-bg:#FBEAE7; --ok:#2E7D4F;
+  --adm-bg:#20252A; --adm-fg:#D7DDE2; --adm-rule:#333A41; --adm-field:#171B1F;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.45;font-variant-numeric:tabular-nums}
+.wrap{max-width:1560px;margin:0 auto;padding:18px 14px 56px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:18px;font-weight:650;margin:0;letter-spacing:-.01em}
+.who{margin-left:auto;font-size:12.5px;color:var(--soft)}
+
+/* portada */
+.gate{max-width:380px;margin:60px auto;background:var(--paper);border:1px solid var(--rule);padding:26px}
+.gate h2{margin:0 0 6px;font-size:17px}
+.gate p{margin:0 0 18px;font-size:13px;color:var(--soft)}
+.gate label{display:block;font-size:12.5px;margin:12px 0 4px}
+.gate input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--rule)}
+.gate button{width:100%;margin-top:18px}
+
+.bar{background:var(--paper);border:1px solid var(--rule);display:flex;flex-wrap:wrap;
+  align-items:center;margin-bottom:14px;position:sticky;top:0;z-index:20}
+.cell{padding:9px 15px;border-right:1px solid var(--hair);flex:1;min-width:130px}
+.cell:last-child{border-right:0}
+.n{font-size:19px;font-weight:600;letter-spacing:-.02em;display:block}
+.l{font-size:11.5px;color:var(--soft)}
+.cell.off .n{color:var(--bad)} .cell.good .n{color:var(--ok)}
+.acts{padding:8px 13px;display:flex;gap:8px;align-items:center}
+
+button{font:inherit;font-weight:550;padding:7px 13px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);cursor:pointer}
+button.ghost{background:transparent;color:var(--ink)}
+button.small{padding:4px 10px;font-size:12.5px}
+button:disabled{opacity:.35;cursor:default}
+:focus-visible{outline:2px solid var(--ivlet);outline-offset:1px}
+
+section{background:var(--paper);border:1px solid var(--rule);margin-bottom:14px}
+.sh{display:flex;align-items:center;gap:10px;padding:10px 15px;border-bottom:1px solid var(--rule)}
+.sh h2{font-size:13.5px;font-weight:600;margin:0;flex:1}
+.bd{padding:13px 15px}
+.note{font-size:12.5px;color:var(--soft);margin:0}
+.tabs{display:flex;border-bottom:1px solid var(--rule)}
+.tab{padding:9px 15px;border:0;background:transparent;color:var(--soft);font-weight:550;
+  border-bottom:2px solid transparent;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+
+.scroll{overflow:auto;max-height:66vh}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:5px 9px;border-bottom:1px solid var(--hair);text-align:right;white-space:nowrap}
+th.k,td.k{text-align:left}
+thead th{position:sticky;background:var(--paper);z-index:3;font-weight:600;font-size:11.5px}
+thead tr.g th{top:0;border-bottom:1px solid var(--rule);text-align:center}
+thead tr.c th{top:27px;border-bottom:1px solid var(--rule)}
+td.let{background:var(--let-bg)} th.let{background:var(--let-hd);color:var(--let)}
+td.may{background:var(--may-bg)} th.may{background:var(--may-hd);color:var(--may)}
+td.ivlet,th.ivlet{background:var(--ivlet-bg);color:var(--ivlet)}
+td.ivmay,th.ivmay{background:var(--ivmay-bg);color:var(--ivmay)}
+input.c{width:88px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;
+  border:1px solid transparent;background:transparent;padding:2px 4px;color:var(--ink)}
+input.c:hover{border-color:var(--rule);background:var(--paper)}
+input.c.dirty{border-color:var(--ink);background:var(--paper);font-weight:650}
+tfoot td{font-weight:650;border-top:1px solid var(--rule);background:#FAFBFB;position:sticky;bottom:0}
+
+.val{display:inline-block;margin-top:10px;border:1px solid var(--rule);max-width:100%;overflow-x:auto}
+.val table{font-size:12.5px;width:auto}
+.val th{background:var(--bg);position:static}
+.val td.d{min-width:92px}
+.val tr.bad td.d{background:var(--bad-bg);color:var(--bad);font-weight:650}
+
+.admin{background:var(--adm-bg);color:var(--adm-fg);border-color:var(--adm-rule)}
+.admin .sh{border-bottom:1px solid var(--adm-rule)}
+.admin textarea{width:100%;min-height:92px;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:11.5px;background:var(--adm-field);color:var(--adm-fg);border:1px solid var(--adm-rule);padding:8px}
+.admin button{border-color:var(--adm-fg);background:var(--adm-fg);color:var(--adm-bg)}
+.admin button.ghost{background:transparent;color:var(--adm-fg)}
+.admin .note{color:#8F99A2}
+.admin input[type=text]{font:inherit;padding:6px 8px;background:var(--adm-field);
+  color:var(--adm-fg);border:1px solid var(--adm-rule)}
+.hidden{display:none}
+.msg{font-size:12.5px;margin-top:8px}
+.msg.err{color:var(--bad)} .msg.ok{color:var(--ok)}
+.banner{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad);
+  padding:10px 14px;margin-bottom:14px;font-size:13px}
+.prog{font-size:12.5px;color:var(--soft);margin-top:8px}
+@media (max-width:640px){ .cell{min-width:50%} .wrap{padding:12px 10px 40px} }
+</style>
+</head>
+<body>
+
+<!-- ══ PORTADA ══ -->
+<div id="gate" class="gate">
+  <h2>Ajuste de cuota</h2>
+  <p>Sell Out Perú — Traditional Trade</p>
+  <div id="gateBody">
+    <label for="gName">Tu nombre</label>
+    <input id="gName" autocomplete="off" placeholder="Nombre y apellido">
+    <label for="gKey">Clave de acceso</label>
+    <input id="gKey" type="password" autocomplete="off">
+    <button id="gGo">Entrar</button>
+  </div>
+  <div id="gateSetup" class="hidden">
+    <p class="note">Primera vez. Define las dos claves; después no vuelve a pedirlo.</p>
+    <label for="sKeyU">Clave para los gerentes</label>
+    <input id="sKeyU" type="text" autocomplete="off">
+    <label for="sKeyA">Clave de administrador</label>
+    <input id="sKeyA" type="text" autocomplete="off">
+    <button id="sGo">Crear</button>
+  </div>
+  <p class="msg" id="gMsg"></p>
+</div>
+
+<!-- ══ APLICACIÓN ══ -->
+<div class="wrap hidden" id="app">
+<header>
+  <h1>Ajuste de cuota — Sell Out Perú TT</h1>
+  <div class="who" id="whoAmI"></div>
+</header>
+
+<div class="banner hidden" id="banner"></div>
+
+<div class="bar">
+  <div class="cell"><span class="n" id="kTons">—</span><span class="l">TONS ingresadas</span></div>
+  <div class="cell"><span class="n" id="kIV">—</span><span class="l">IV estimado S/</span></div>
+  <div class="cell" id="cDif"><span class="n" id="kDif">—</span><span class="l">Diferencia vs IBP</span></div>
+  <div class="cell"><span class="n" id="kPend">0</span><span class="l">Cambios sin guardar</span></div>
+  <div class="acts"><button id="save" disabled>Guardar cambios</button></div>
+</div>
+
+<section id="main" class="hidden">
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tReg" role="tab" aria-selected="true">Split regional</button>
+    <button class="tab" id="tCli" role="tab" aria-selected="false">Split por cliente</button>
+  </div>
+  <div class="bd" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <p class="note" id="lastInfo">Cargando…</p>
+    <button class="ghost small" id="undo" style="margin-left:auto">Volver a lo guardado</button>
+  </div>
+  <div class="scroll"><div id="grid"></div></div>
+  <div class="bd"><div class="val" id="validador"></div></div>
+</section>
+
+<section id="ivSec" class="hidden">
+  <div class="sh"><h2>IV estimado</h2><span class="note" id="ivNote"></span></div>
+  <div class="scroll" style="max-height:52vh"><div id="ivGrid"></div></div>
+</section>
+
+<p style="text-align:center"><button class="link ghost small hidden" id="toggleAdmin">Configuración de la base</button></p>
+
+<section class="admin hidden" id="adminBox">
+  <div class="sh"><h2>Configuración de la base</h2></div>
+  <div class="bd">
+    <p class="note">Abre un CSV o pega <strong>Tbl_Live_SO</strong> con encabezados. Se resume por celda y Format Flavor antes de guardarse, así que los gerentes ya no cargan nada.</p>
+    <textarea id="raw" placeholder="Pega aquí la tabla desde Excel"></textarea>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+      <input type="file" id="csv" accept=".csv,.txt,.tsv" style="color:var(--adm-fg);max-width:240px">
+      <button id="pub">Publicar base</button>
+      <button class="ghost" id="exp">Exportar ajustes a CSV</button>
+      <button class="ghost" id="wipe">Borrar ajustes guardados</button>
+    </div>
+    <p class="prog hidden" id="prog"></p>
+    <p class="msg" id="adminMsg"></p>
+  </div>
+</section>
+</div>
+
+<script type="module">
+/* ══════════════════════════════════════════════════════════
+   PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE
+   Consola de Firebase → Configuración del proyecto → Tus apps → Web
+   ══════════════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyADxQ6aZNxcF-ZklPGY078WiYfYJFgH6Uc",
+  authDomain: "cuotas-so.firebaseapp.com",
+  projectId: "cuotas-so",
+  storageBucket: "cuotas-so.firebasestorage.app",
+  messagingSenderId: "331109153379",
+  appId: "1:331109153379:web:cd1e38cc06f0a00fad9656"
+};
+/* ══════════════════════════════════════════════════════════ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const CATS=["BISCUITS","GUMS & CANDIES","PBS & MEALS"];
+const SUBS=["LET","MAY"];
+const REQ=["SUBCANAL","REGION","SubCanalCliente","Categoria","DISTRIBUIDOR",
+  "F FLAVOR","CUOTA TONS SO","IV_POR_TON_SKU","RAW_IBP_FF_TONS"];
+const SEP="\u001F";
+const CHUNK_BYTES=700000;          // el límite de Firestore es 1 MiB por documento
+
+let dbF=null, base=null, meta=null;
+let saved={reg:{},cli:{},by:"",at:""};
+let local={reg:{},cli:{}};
+let level="reg", me="", isAdmin=false;
+
+/* ---------- utilidades ---------- */
+function num(v){
+  if(v==null) return 0;
+  let s=String(v).trim().replace(/\s|'|S\/|\$/g,"");
+  if(!s||s==="-") return 0;
+  const d=s.lastIndexOf("."), c=s.lastIndexOf(",");
+  if(d>-1&&c>-1) s = c>d ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,"");
+  else if(c>-1) s = /^\d{1,3}(,\d{3})+$/.test(s) ? s.replace(/,/g,"") : s.replace(",",".");
+  const n=parseFloat(s); return isNaN(n)?0:n;
+}
+const f1=n=>(n??0).toLocaleString("es-PE",{minimumFractionDigits:3,maximumFractionDigits:3});
+const f0=n=>(n??0).toLocaleString("es-PE",{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+function banner(t){const b=$("banner"); if(!t){b.classList.add("hidden");return;}
+  b.textContent=t; b.classList.remove("hidden");}
+async function sha(s){
+  const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("");
+}
+
+/* ---------- base agregada ----------
+   Por celda k y format flavor f guardamos
+     sp = Σ participación      sv = Σ participación × IV_POR_TON
+   de modo que TONS(k,f) = mgr_k × sp × factor_f
+               IV(k,f)   = mgr_k × sv × factor_f
+   Idéntico a calcular fila por fila, con mucho menos volumen. */
+function build(text){
+  const lines=text.replace(/\r/g,"").split("\n").filter(l=>l.trim());
+  if(lines.length<2) throw new Error("No hay filas que leer.");
+  const h0=lines[0];
+  const sep=h0.includes("\t")?"\t":(h0.split(";").length>h0.split(",").length?";":",");
+  const cols=h0.split(sep).map(s=>s.trim().replace(/^"|"$/g,""));
+  const miss=REQ.filter(c=>!cols.includes(c));
+  if(miss.length) throw new Error("Faltan columnas: "+miss.join(", "));
+  const ix={}; cols.forEach((c,i)=>ix[c]=i);
+  const raw=[];
+  for(let i=1;i<lines.length;i++){
+    const v=lines[i].split(sep), t=num(v[ix["CUOTA TONS SO"]]);
+    if(!t) continue;
+    raw.push({sc:(v[ix.SUBCANAL]||"").trim(), rg:(v[ix.REGION]||"").trim(),
+      sb:(v[ix.SubCanalCliente]||"").trim(), ct:(v[ix.Categoria]||"").trim(),
+      ds:(v[ix.DISTRIBUIDOR]||"").trim(), ff:(v[ix["F FLAVOR"]]||"").trim(),
+      t, iv:num(v[ix.IV_POR_TON_SKU]), ibp:num(v[ix["RAW_IBP_FF_TONS"]])});
+  }
+  if(!raw.length) throw new Error("Ninguna fila tiene CUOTA TONS SO.");
+  const ibp={}; raw.forEach(r=>{ if(!(r.ff in ibp)) ibp[r.ff]=r.ibp; });
+  const mk=keyf=>{
+    const tot={}; raw.forEach(r=>{const k=keyf(r); tot[k]=(tot[k]||0)+r.t;});
+    const agg=new Map();
+    raw.forEach(r=>{
+      const k=keyf(r), p=r.t/tot[k], id=k+SEP+r.ff;
+      let a=agg.get(id); if(!a){a={k,ff:r.ff,sp:0,sv:0};agg.set(id,a);}
+      a.sp+=p; a.sv+=p*r.iv;
+    });
+    const byKey=new Map();
+    for(const a of agg.values()){
+      if(!byKey.has(a.k)) byKey.set(a.k,[]);
+      byKey.get(a.k).push([a.ff,+a.sp.toFixed(10),+a.sv.toFixed(6)]);
+    }
+    return {tot,byKey};
+  };
+  return {ibp,
+    reg:mk(r=>[r.sc,r.rg,r.ct,r.sb].join(SEP)),
+    cli:mk(r=>[r.sc,r.rg,r.ds,r.ct,r.sb].join(SEP))};
+}
+function chunkify(part){
+  const out=[]; let cur={tot:{},cells:{}}, size=0;
+  for(const [k,cells] of part.byKey){
+    const add=JSON.stringify(cells).length+k.length*2+20;
+    if(size+add>CHUNK_BYTES && size>0){ out.push(cur); cur={tot:{},cells:{}}; size=0; }
+    cur.tot[k]=+part.tot[k].toFixed(6); cur.cells[k]=cells; size+=add;
+  }
+  if(size>0) out.push(cur);
+  return out;
+}
+
+/* ---------- cálculo ---------- */
+function compute(){
+  const b=base[level], ed={...saved[level],...local[level]}, sumFF={};
+  for(const k in b.cells){
+    const mgr = k in ed ? ed[k] : b.tot[k];
+    for(const [ff,sp] of b.cells[k]) sumFF[ff]=(sumFF[ff]||0)+mgr*sp;
+  }
+  const fac={};
+  for(const ff in base.ibp) fac[ff] = !sumFF[ff] ? 1 : base.ibp[ff]/sumFF[ff];
+  const tons={}, iv={};
+  for(const k in b.cells){
+    const mgr = k in ed ? ed[k] : b.tot[k];
+    let t=0,v=0;
+    for(const [ff,sp,sv] of b.cells[k]){ const f=fac[ff]??1; t+=mgr*sp*f; v+=mgr*sv*f; }
+    tons[k]=t; iv[k]=v;
+  }
+  return {tons,iv,ed};
+}
+
+/* ---------- render ---------- */
+const colDefs=()=>{const o=[];for(const s of SUBS)for(const c of CATS)o.push({c,s});return o;};
+function rowsOf(){
+  const b=base[level], byRow=new Map();
+  for(const k in b.cells){
+    const p=k.split(SEP);
+    const head = level==="reg" ? [p[0],p[1]] : [p[0],p[1],p[2]];
+    const ci   = level==="reg" ? p[2]+"|"+p[3] : p[3]+"|"+p[4];
+    const rk=head.join(SEP);
+    if(!byRow.has(rk)) byRow.set(rk,{head,cells:{}});
+    byRow.get(rk).cells[ci]=k;
+  }
+  return [...byRow.values()].sort((a,b)=>a.head.join().localeCompare(b.head.join(),"es"));
+}
+function draw(){
+  if(!base) return;
+  const {iv,ed}=compute();
+  const b=base[level], cols=colDefs(), rws=rowsOf();
+  const heads = level==="reg" ? ["Subcanal","Región"] : ["Subcanal","Región","Distribuidor"];
+
+  let h='<table><thead><tr class="g"><th class="k" colspan="'+heads.length+'"></th>'+
+    '<th class="let" colspan="3">Ingreso LET — toneladas</th>'+
+    '<th class="may" colspan="3">Ingreso MAY — toneladas</th><th></th></tr><tr class="c">';
+  heads.forEach(x=>h+='<th class="k">'+x+'</th>');
+  cols.forEach(c=>h+='<th class="'+(c.s==="LET"?"let":"may")+'">'+esc(c.c)+'</th>');
+  h+='<th>Total</th></tr></thead><tbody>';
+  const ct=cols.map(()=>0); let gt=0;
+  for(const r of rws){
+    h+='<tr>'; r.head.forEach(x=>h+='<td class="k">'+esc(x)+'</td>');
+    let rt=0;
+    cols.forEach((c,i)=>{
+      const k=r.cells[c.c+"|"+c.s], cls=c.s==="LET"?"let":"may";
+      if(!k){h+='<td class="'+cls+'"></td>';return;}
+      const v = k in ed ? ed[k] : b.tot[k];
+      rt+=v; ct[i]+=v;
+      h+='<td class="'+cls+'"><input class="c'+(k in local[level]?" dirty":"")+
+        '" data-k="'+esc(k)+'" value="'+v.toFixed(3)+'" inputmode="decimal"></td>';
+    });
+    gt+=rt; h+='<td>'+f1(rt)+'</td></tr>';
+  }
+  h+='</tbody><tfoot><tr><td class="k" colspan="'+heads.length+'">Total</td>';
+  cols.forEach((c,i)=>h+='<td class="'+(c.s==="LET"?"let":"may")+'">'+f1(ct[i])+'</td>');
+  h+='<td>'+f1(gt)+'</td></tr></tfoot></table>';
+  $("grid").innerHTML=h;
+
+  let g='<table><thead><tr class="g"><th class="k" colspan="'+heads.length+'"></th>'+
+    '<th class="ivlet" colspan="3">IV estimado LET — soles</th>'+
+    '<th class="ivmay" colspan="3">IV estimado MAY — soles</th><th></th></tr><tr class="c">';
+  heads.forEach(x=>g+='<th class="k">'+x+'</th>');
+  cols.forEach(c=>g+='<th class="'+(c.s==="LET"?"ivlet":"ivmay")+'">'+esc(c.c)+'</th>');
+  g+='<th>Total</th></tr></thead><tbody>';
+  const cv=cols.map(()=>0); let gv=0;
+  for(const r of rws){
+    g+='<tr>'; r.head.forEach(x=>g+='<td class="k">'+esc(x)+'</td>');
+    let rv=0;
+    cols.forEach((c,i)=>{
+      const k=r.cells[c.c+"|"+c.s], cls=c.s==="LET"?"ivlet":"ivmay";
+      const v=k?(iv[k]||0):null;
+      if(v!==null){rv+=v;cv[i]+=v;}
+      g+='<td class="'+cls+'">'+(v===null?"":f0(v))+'</td>';
+    });
+    gv+=rv; g+='<td>'+f0(rv)+'</td></tr>';
+  }
+  g+='</tbody><tfoot><tr><td class="k" colspan="'+heads.length+'">Total</td>';
+  cols.forEach((c,i)=>g+='<td class="'+(c.s==="LET"?"ivlet":"ivmay")+'">'+f0(cv[i])+'</td>');
+  g+='<td>'+f0(gv)+'</td></tr></tfoot></table>';
+  $("ivGrid").innerHTML=g;
+
+  const ibpCat={}, inCat={};
+  for(const k in b.cells){
+    const p=k.split(SEP), cat = level==="reg"?p[2]:p[3];
+    const mgr = k in ed ? ed[k] : b.tot[k];
+    let sp=0; for(const c of b.cells[k]) sp+=c[1];
+    inCat[cat]=(inCat[cat]||0)+mgr*sp;
+    ibpCat[cat]=(ibpCat[cat]||0)+b.tot[k]*sp;
+  }
+  let v='<table><thead><tr><th class="k">Validador vs IBP</th><th>Total IBP</th>'+
+    '<th>Total ingresado</th><th>Diferencia</th></tr></thead><tbody>';
+  let ti=0,tn=0;
+  for(const c of CATS){
+    const a=ibpCat[c]||0, bb=inCat[c]||0, d=bb-a;
+    ti+=a; tn+=bb;
+    v+='<tr class="'+(Math.abs(d)>0.001?"bad":"")+'"><td class="k">'+esc(c)+'</td><td>'+
+      f1(a)+'</td><td>'+f1(bb)+'</td><td class="d">'+f1(d)+'</td></tr>';
+  }
+  v+='</tbody><tfoot><tr><td class="k">Total</td><td>'+f1(ti)+'</td><td>'+f1(tn)+
+    '</td><td class="d">'+f1(tn-ti)+'</td></tr></tfoot></table>';
+  $("validador").innerHTML=v;
+
+  $("kTons").textContent=f1(gt);
+  $("kIV").textContent=f0(gv);
+  const dif=tn-ti;
+  $("kDif").textContent=f1(dif);
+  $("cDif").classList.toggle("off",Math.abs(dif)>0.001);
+  $("cDif").classList.toggle("good",Math.abs(dif)<=0.001);
+  const pend=Object.keys(local.reg).length+Object.keys(local.cli).length;
+  $("kPend").textContent=String(pend);
+  $("save").disabled = pend===0 || !me;
+  $("ivNote").textContent = level==="reg"
+    ? "Se recalcula al salir de cada celda del split regional."
+    : "Se recalcula al salir de cada celda del split por cliente.";
+
+  document.querySelectorAll("input.c").forEach(i=>{
+    i.addEventListener("change",()=>{
+      const k=i.dataset.k, val=num(i.value);
+      if(Math.abs(val-(base[level].tot[k]||0))<1e-9 && !(k in saved[level])) delete local[level][k];
+      else local[level][k]=val;
+      draw();
+    });
+  });
+}
+
+/* ---------- Firestore ---------- */
+async function readPart(name){
+  const snap=await getDocs(collection(dbF,name));
+  if(snap.empty) return null;
+  const tot={},cells={};
+  snap.forEach(d=>{const o=d.data(); Object.assign(tot,o.tot||{}); Object.assign(cells,o.cells||{});});
+  return {tot,cells};
+}
+async function loadBase(){
+  const m=await getDoc(doc(dbF,"cfg","meta"));
+  if(!m.exists()) return null;
+  meta=m.data();
+  const ibpDoc=await getDoc(doc(dbF,"cfg","ibp"));
+  const reg=await readPart("basereg"), cli=await readPart("basecli");
+  if(!reg||!cli) return null;
+  return {ibp:(ibpDoc.data()||{}).map||{}, reg, cli};
+}
+async function writePart(name,chunks,label){
+  const old=await getDocs(collection(dbF,name));
+  for(let i=0;i<chunks.length;i++){
+    $("prog").textContent=label+": guardando bloque "+(i+1)+" de "+chunks.length+"…";
+    await setDoc(doc(dbF,name,"c"+i),chunks[i]);
+  }
+  for(const d of old.docs){
+    const n=parseInt(d.id.slice(1),10);
+    if(isNaN(n)||n>=chunks.length) await deleteDoc(doc(dbF,name,d.id));
+  }
+}
+function info(){
+  $("lastInfo").textContent = saved.at
+    ? "Última actualización: "+(saved.by||"alguien")+" · "+new Date(saved.at).toLocaleString("es-PE")
+    : "Nadie ha guardado ajustes todavía.";
+}
+async function save(){
+  const btn=$("save"); btn.disabled=true; btn.textContent="Guardando…";
+  try{
+    const ref=doc(dbF,"ajustes","actual");
+    const cur=(await getDoc(ref)).data()||{reg:{},cli:{}};
+    const merged={reg:{...(cur.reg||{}),...local.reg},cli:{...(cur.cli||{}),...local.cli},
+      by:me, at:new Date().toISOString()};
+    await setDoc(ref,merged);
+    saved=merged; local={reg:{},cli:{}};
+    info(); draw();
+  }catch(e){ alert("No se pudo guardar: "+(e&&e.message||e)); }
+  btn.textContent="Guardar cambios"; draw();
+}
+
+/* ---------- eventos ---------- */
+$("save").onclick=save;
+$("undo").onclick=()=>{local={reg:{},cli:{}};draw();};
+$("tReg").onclick=()=>setLevel("reg");
+$("tCli").onclick=()=>setLevel("cli");
+function setLevel(l){
+  level=l;
+  $("tReg").setAttribute("aria-selected",String(l==="reg"));
+  $("tCli").setAttribute("aria-selected",String(l==="cli"));
+  draw();
+}
+$("toggleAdmin").onclick=()=>$("adminBox").classList.toggle("hidden");
+$("csv").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const m=$("adminMsg"), rd=new FileReader();
+  rd.onload=()=>{$("raw").value=rd.result; m.className="msg ok";
+    m.textContent='Archivo "'+f.name+'" leído. Pulsa Publicar base.';};
+  rd.onerror=()=>{m.className="msg err"; m.textContent="No se pudo leer el archivo.";};
+  rd.readAsText(f,"UTF-8");
+};
+$("pub").onclick=async()=>{
+  const m=$("adminMsg"); m.className="msg"; m.textContent="";
+  $("prog").classList.remove("hidden"); $("prog").textContent="Procesando…";
+  try{
+    const b=build($("raw").value);
+    const cr=chunkify(b.reg), cc=chunkify(b.cli);
+    await setDoc(doc(dbF,"cfg","ibp"),{map:b.ibp});
+    await writePart("basereg",cr,"Split regional");
+    await writePart("basecli",cc,"Split por cliente");
+    await setDoc(doc(dbF,"cfg","meta"),{...meta,
+      at:new Date().toISOString(), nReg:Object.keys(b.reg.tot).length,
+      nCli:Object.keys(b.cli.tot).length, nFF:Object.keys(b.ibp).length});
+    m.className="msg ok";
+    m.textContent="Base publicada: "+Object.keys(b.reg.tot).length+" celdas región, "+
+      Object.keys(b.cli.tot).length+" celdas cliente, "+Object.keys(b.ibp).length+" format flavors.";
+    $("prog").classList.add("hidden");
+    $("raw").value=""; $("csv").value="";
+    base=await loadBase(); showApp(); draw();
+  }catch(e){ $("prog").classList.add("hidden");
+    m.className="msg err"; m.textContent=(e&&e.message)||String(e); }
+};
+$("wipe").onclick=async()=>{
+  if(!confirm("Se borran todos los ajustes guardados por los gerentes. ¿Continuar?")) return;
+  await setDoc(doc(dbF,"ajustes","actual"),{reg:{},cli:{},by:me,at:new Date().toISOString()});
+};
+$("exp").onclick=()=>{
+  const out=[["NIVEL","SUBCANAL","REGION","DISTRIBUIDOR","Categoria","SubCanalCliente","TONS"]];
+  for(const lv of ["reg","cli"]) for(const k in saved[lv]){
+    const p=k.split(SEP);
+    out.push(lv==="reg"?["REGION",p[0],p[1],"",p[2],p[3],saved.reg[k]]
+                       :["CLIENTE",p[0],p[1],p[2],p[3],p[4],saved.cli[k]]);
+  }
+  const csv=out.map(r=>r.map(v=>/[;"\n]/.test(String(v))?'"'+v+'"':v).join(";")).join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}));
+  a.download="ajustes_cuota.csv"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+};
+window.addEventListener("beforeunload",e=>{
+  if(Object.keys(local.reg).length+Object.keys(local.cli).length>0){e.preventDefault();e.returnValue="";}
+});
+
+function showApp(){
+  $("gate").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("main").classList.remove("hidden");
+  $("ivSec").classList.remove("hidden");
+  $("whoAmI").textContent = me + (isAdmin ? " · administrador" : "");
+  if(isAdmin) $("toggleAdmin").classList.remove("hidden");
+}
+
+/* ---------- arranque ---------- */
+$("gGo").onclick=async()=>{
+  const m=$("gMsg"); m.className="msg";
+  const nm=$("gName").value.trim(), kv=$("gKey").value;
+  if(!nm){ m.className="msg err"; m.textContent="Escribe tu nombre."; return; }
+  const h=await sha(kv);
+  if(h===meta.keyA) isAdmin=true;
+  else if(h!==meta.keyU){ m.className="msg err"; m.textContent="Clave incorrecta."; return; }
+  me=nm;
+  base=await loadBase();
+  if(!base){
+    if(isAdmin){ $("gate").classList.add("hidden"); $("app").classList.remove("hidden");
+      $("whoAmI").textContent=me+" · administrador";
+      $("toggleAdmin").classList.remove("hidden"); $("adminBox").classList.remove("hidden");
+      $("lastInfo").textContent="Todavía no hay una base publicada.";
+    } else { m.className="msg err"; m.textContent="Todavía no hay una base publicada. Avisa al administrador."; }
+    return;
+  }
+  showApp();
+  onSnapshot(doc(dbF,"ajustes","actual"), snap=>{
+    const d=snap.exists()?snap.data():null;
+    saved = d?{reg:d.reg||{},cli:d.cli||{},by:d.by||"",at:d.at||""}:{reg:{},cli:{},by:"",at:""};
+    info(); draw();
+  }, ()=>banner("Se perdió la conexión con los datos compartidos. Recarga la página."));
+  info(); draw();
+};
+$("sGo").onclick=async()=>{
+  const m=$("gMsg"), u=$("sKeyU").value.trim(), a=$("sKeyA").value.trim();
+  if(u.length<4||a.length<4){ m.className="msg err"; m.textContent="Cada clave debe tener al menos 4 caracteres."; return; }
+  if(u===a){ m.className="msg err"; m.textContent="Las dos claves deben ser distintas."; return; }
+  await setDoc(doc(dbF,"cfg","meta"),{keyU:await sha(u), keyA:await sha(a), at:new Date().toISOString()});
+  meta=(await getDoc(doc(dbF,"cfg","meta"))).data();
+  $("gateSetup").classList.add("hidden"); $("gateBody").classList.remove("hidden");
+  m.className="msg ok"; m.textContent="Claves creadas. Entra con la de administrador.";
+};
+
+(async()=>{
+  const m=$("gMsg");
+  try{
+    const app=initializeApp(firebaseConfig);
+    dbF=getFirestore(app);
+    await signInAnonymously(getAuth(app));
+  }catch(e){
+    m.className="msg err";
+    m.textContent="No se pudo conectar con la base de datos. Revisa la configuración de Firebase.";
+    return;
+  }
+  try{
+    const d=await getDoc(doc(dbF,"cfg","meta"));
+    if(d.exists() && d.data().keyU){ meta=d.data(); }
+    else { $("gateBody").classList.add("hidden"); $("gateSetup").classList.remove("hidden"); }
+  }catch(e){
+    m.className="msg err"; m.textContent="No se pudo leer la configuración: "+(e.message||e);
+  }
+})();
+</script>
+</body>
+</html>
