@@ -63,7 +63,7 @@ section{background:var(--paper);border:1px solid var(--rule);margin-bottom:12px}
 
 .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 15px;
   border-bottom:1px solid var(--hair)}
-.toolbar input[type=search]{font:inherit;padding:5px 9px;border:1px solid var(--rule);min-width:210px}
+.toolbar select{font:inherit;padding:5px 9px;border:1px solid var(--rule);min-width:210px;background:var(--paper);color:var(--ink)}
 
 .scroll{overflow:auto;max-height:70vh}
 table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
@@ -171,7 +171,8 @@ footer strong{color:var(--ink)}
   </div>
   <div class="bd"><p class="note" id="levelNote"></p></div>
   <div class="toolbar">
-    <input type="search" id="filtro" placeholder="Filtrar por subcanal, región o distribuidor">
+    <label for="filtro" class="note">Región</label>
+    <select id="filtro"><option value="">Todas las regiones</option></select>
     <span class="note" id="filtroInfo"></span>
     <button class="ghost small" id="expGrid" style="margin-left:auto">Exportar a Excel</button>
     <span class="note" id="lastInfo"></span>
@@ -356,11 +357,19 @@ function rowsOf(){
     }
     return 0;
   });
-  if(filtro){
-    const f=filtro.toLowerCase();
-    arr=arr.filter(r=>r.head.some(x=>String(x).toLowerCase().includes(f)));
-  }
+  if(filtro) arr=arr.filter(r=>String(r.head[1])===filtro);
   return arr;
+}
+
+function fillRegiones(){
+  const set=new Set();
+  for(const lv of ["reg","cli"])
+    for(const k in base[lv].cells) set.add(k.split(SEP)[1]);
+  const arr=[...set].filter(Boolean).sort((a,b)=>a.localeCompare(b,"es"));
+  const sel=$("filtro"), prev=sel.value;
+  sel.innerHTML='<option value="">Todas las regiones</option>'+
+    arr.map(r=>'<option value="'+esc(r)+'">'+esc(r)+'</option>').join("");
+  if(arr.includes(prev)) sel.value=prev; else { sel.value=""; filtro=""; }
 }
 
 function draw(){
@@ -401,7 +410,7 @@ function draw(){
     '<span class="iv">S/ '+fK(cvv[i])+'</span></td>');
   h+='<td>'+f1(gt)+'<span class="iv">S/ '+fK(gv)+'</span></td></tr></tfoot></table>';
   $("grid").innerHTML=h;
-  $("filtroInfo").textContent = filtro ? rws.length+" filas coinciden" : rws.length+" filas";
+  $("filtroInfo").textContent = filtro ? rws.length+" filas en "+filtro : rws.length+" filas";
 
   const ibpCat={}, inCat={};
   for(const k in b.cells){
@@ -561,7 +570,7 @@ function setLevel(l){
   $("tCli").setAttribute("aria-selected",String(l==="cli"));
   draw();
 }
-$("filtro").addEventListener("input",e=>{ filtro=e.target.value.trim(); draw(); });
+$("filtro").addEventListener("change",e=>{ filtro=e.target.value; draw(); });
 $("expGrid").onclick=exportGrid;
 $("expRes").onclick=exportResumen;
 $("toggleAdmin").onclick=()=>$("adminBox").classList.toggle("hidden");
@@ -590,7 +599,7 @@ $("pub").onclick=async()=>{
       Object.keys(b.cli.tot).length+" celdas cliente, "+Object.keys(b.ibp).length+" format flavors.";
     $("prog").classList.add("hidden");
     $("raw").value=""; $("csv").value="";
-    base=await loadBase(); showApp(); draw();
+    base=await loadBase(); showApp(); fillRegiones(); draw();
   }catch(e){ $("prog").classList.add("hidden");
     m.className="msg err"; m.textContent=(e&&e.message)||String(e); }
 };
@@ -637,7 +646,7 @@ $("gGo").onclick=async()=>{
     } else { m.className="msg err"; m.textContent="Todavía no hay una base publicada. Avisa a Sales Operations."; }
     return;
   }
-  showApp();
+  showApp(); fillRegiones();
   onSnapshot(doc(dbF,"ajustes","actual"), snap=>{
     const d=snap.exists()?snap.data():null;
     saved = d?{reg:d.reg||{},cli:d.cli||{},by:d.by||"",at:d.at||""}:{reg:{},cli:{},by:"",at:""};
