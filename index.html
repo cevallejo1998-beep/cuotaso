@@ -10,7 +10,7 @@
   --rule:#D2D7DB; --hair:#E7EAEC;
   --let:#2E7D4F; --let-bg:#EDF6F0; --let-hd:#D6EBDE; --let-iv:#3F7F5E;
   --may:#B45A1E; --may-bg:#FDF3EB; --may-hd:#F8DFC9; --may-iv:#A0611F;
-  --bad:#9E3423; --bad-bg:#FBEAE7; --ok:#2E7D4F;
+  --bad:#9E3423; --bad-bg:#FBEAE7; --ok:#2E7D4F; --ok-bg:#E9F4ED;
   --warn-bg:#FFF8E6; --warn-rule:#E4C972; --warn-ink:#7A5A10;
   --adm-bg:#20252A; --adm-fg:#D7DDE2; --adm-rule:#333A41; --adm-field:#171B1F;
 }
@@ -18,7 +18,7 @@
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.45;font-variant-numeric:tabular-nums}
 .wrap{max-width:1600px;margin:0 auto;padding:18px 14px 20px}
-header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+header{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 h1{font-size:18px;font-weight:650;margin:0;letter-spacing:-.01em}
 .sub{font-size:12.5px;color:var(--soft)}
 .who{margin-left:auto;font-size:12.5px;color:var(--soft)}
@@ -31,6 +31,21 @@ h1{font-size:18px;font-weight:650;margin:0;letter-spacing:-.01em}
 .gate button{width:100%;margin-top:18px}
 .gate .conf{margin-top:20px;padding:10px 12px;background:var(--warn-bg);
   border:1px solid var(--warn-rule);color:var(--warn-ink);font-size:12px;line-height:1.5}
+
+/* ── estado de la ventana de registro ── */
+.ventana{display:flex;align-items:center;gap:18px;padding:14px 20px;margin-bottom:12px;
+  border:1px solid var(--rule);background:var(--paper);border-left-width:6px}
+.ventana.abierta{border-left-color:var(--ok);background:var(--ok-bg)}
+.ventana.pronto{border-left-color:var(--warn-rule);background:var(--warn-bg)}
+.ventana.cerrada{border-left-color:var(--bad);background:var(--bad-bg)}
+.v-estado{font-size:17px;font-weight:650;white-space:nowrap}
+.ventana.abierta .v-estado{color:var(--ok)}
+.ventana.pronto .v-estado{color:var(--warn-ink)}
+.ventana.cerrada .v-estado{color:var(--bad)}
+.v-detalle{font-size:13.5px;color:var(--ink)}
+.v-dias{margin-left:auto;text-align:right;white-space:nowrap}
+.v-dias b{display:block;font-size:26px;font-weight:650;line-height:1.1}
+.v-dias span{font-size:11.5px;color:var(--soft)}
 
 .conf-strip{background:var(--warn-bg);border:1px solid var(--warn-rule);color:var(--warn-ink);
   padding:8px 14px;font-size:12px;margin-bottom:12px}
@@ -63,7 +78,8 @@ section{background:var(--paper);border:1px solid var(--rule);margin-bottom:12px}
 
 .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 15px;
   border-bottom:1px solid var(--hair)}
-.toolbar select{font:inherit;padding:5px 9px;border:1px solid var(--rule);min-width:210px;background:var(--paper);color:var(--ink)}
+.toolbar select{font:inherit;padding:5px 9px;border:1px solid var(--rule);min-width:210px;
+  background:var(--paper);color:var(--ink)}
 
 .scroll{overflow:auto;max-height:70vh}
 table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
@@ -76,8 +92,9 @@ td.let{background:var(--let-bg)} th.let{background:var(--let-hd);color:var(--let
 td.may{background:var(--may-bg)} th.may{background:var(--may-hd);color:var(--may)}
 input.c{width:92px;text-align:right;font:inherit;font-weight:550;font-variant-numeric:tabular-nums;
   border:1px solid transparent;background:transparent;padding:2px 4px;color:var(--ink)}
-input.c:hover{border-color:var(--rule);background:var(--paper)}
+input.c:hover:not(:disabled){border-color:var(--rule);background:var(--paper)}
 input.c.dirty{border-color:var(--ink);background:var(--paper);font-weight:700}
+input.c:disabled{color:var(--ink);opacity:.75;cursor:default}
 .iv{display:block;font-size:11px;padding-right:5px;margin-top:-1px}
 td.let .iv{color:var(--let-iv)} td.may .iv{color:var(--may-iv)}
 td.empty{color:#B6BCC2}
@@ -89,8 +106,23 @@ tfoot .iv{font-weight:650}
 .val th{background:var(--bg);position:static}
 .val td.d{min-width:92px}
 .val tr.bad td.d{background:var(--bad-bg);color:var(--bad);font-weight:650}
-#resumen table{width:auto;min-width:420px}
-#resumen th{position:static;background:var(--bg)}
+#resumen table,#refTbl table{width:auto;min-width:520px}
+#resumen th,#refTbl th{position:static;background:var(--bg)}
+#refTbl{border:1px solid var(--rule);max-width:100%;overflow-x:auto;display:inline-block}
+#refTbl table{min-width:820px;font-size:12.5px}
+#refTbl td.rc{padding:6px 12px;border-left:1px solid var(--hair)}
+#refTbl td.rc b{display:block;font-size:13px;font-weight:600;line-height:1.2}
+#refTbl td.rc span{display:block;font-size:11px;color:var(--soft);margin-top:1px}
+#refTbl td.rc.falta{background:#FFFBF0}
+#refTbl td.rc.falta b{color:var(--warn-ink)}
+#refTbl td.rc.exceso{background:#FDF1EF}
+#refTbl td.rc.exceso b{color:var(--bad)}
+#refTbl td.rc.cuadra b{color:var(--ok)}
+#refTbl td.rc.vacia{color:#B6BCC2}
+#refTbl td.tot{border-left:2px solid var(--rule)}
+#refTbl .leyenda{display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--soft);
+  padding:8px 12px;border-top:1px solid var(--hair)}
+#refTbl .leyenda i{font-style:normal;display:inline-block;width:10px;height:10px;margin-right:5px}
 
 .admin{background:var(--adm-bg);color:var(--adm-fg);border-color:var(--adm-rule)}
 .admin .sh{border-bottom:1px solid var(--adm-rule)}
@@ -99,6 +131,24 @@ tfoot .iv{font-weight:650}
 .admin button{border-color:var(--adm-fg);background:var(--adm-fg);color:var(--adm-bg)}
 .admin button.ghost{background:transparent;color:var(--adm-fg)}
 .admin .note{color:#8F99A2}
+.admin input,.admin select{font:inherit;padding:6px 8px;background:var(--adm-field);
+  color:var(--adm-fg);border:1px solid var(--adm-rule)}
+.admin label{font-size:12px;color:#8F99A2;display:block;margin-bottom:4px}
+.admin .fila{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-top:14px}
+.admin hr{border:0;border-top:1px solid var(--adm-rule);margin:18px 0}
+.admin h3{font-size:12.5px;font-weight:600;margin:0 0 4px;color:var(--adm-fg)}
+.emg{border:1px solid #8A5A20;background:#2A2118;padding:14px 16px;margin-top:14px}
+.emg.on{border-color:#D98E5A;background:#3A2A18}
+.emg .tit{font-size:13px;font-weight:650;color:#E8B583}
+.ventana.forzada{border-left-color:#C4622D;background:#FFF1E6}
+.ventana.forzada .v-estado{color:#C4622D}
+.modal{position:fixed;inset:0;background:rgba(20,24,27,.55);z-index:90;
+  display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .caja{background:var(--paper);border:1px solid var(--rule);padding:24px 26px;
+  max-width:460px;width:100%;box-shadow:0 18px 50px rgba(20,24,27,.22)}
+.modal h3{margin:0 0 8px;font-size:16px;font-weight:650}
+.modal p{margin:0;font-size:13.5px;color:var(--soft);line-height:1.5}
+.modal .mBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
 .hidden{display:none}
 .msg{font-size:12.5px;margin-top:8px}
 .msg.err{color:var(--bad)} .msg.ok{color:var(--ok)}
@@ -107,7 +157,8 @@ tfoot .iv{font-weight:650}
 .prog{font-size:12.5px;color:var(--soft);margin-top:8px}
 footer{max-width:1600px;margin:0 auto;padding:6px 14px 50px;font-size:12px;color:var(--soft)}
 footer strong{color:var(--ink)}
-@media (max-width:640px){ .cell{min-width:50%} .wrap{padding:12px 10px 16px} }
+@media (max-width:640px){ .cell{min-width:50%} .wrap{padding:12px 10px 16px}
+  .ventana{flex-direction:column;align-items:flex-start;gap:8px} .v-dias{margin-left:0;text-align:left} }
 </style>
 </head>
 <body>
@@ -143,7 +194,14 @@ footer strong{color:var(--ink)}
   <h1>Cuota Sell Out — Traditional Trade Perú</h1>
   <span class="sub">Ajuste de toneladas y valorización en soles</span>
   <div class="who" id="whoAmI"></div>
+  <button class="ghost small" id="salir">Salir</button>
 </header>
+
+<div class="ventana hidden" id="ventana">
+  <span class="v-estado" id="vEstado"></span>
+  <span class="v-detalle" id="vDetalle"></span>
+  <span class="v-dias hidden" id="vDias"><b id="vDiasN"></b><span id="vDiasT"></span></span>
+</div>
 
 <div class="conf-strip">
   <strong>Confidencial — uso interno.</strong> No compartas el enlace ni la clave fuera del
@@ -152,6 +210,19 @@ footer strong{color:var(--ink)}
 </div>
 
 <div class="banner hidden" id="banner"></div>
+
+<div class="modal hidden" id="modal">
+  <div class="caja">
+    <h3 id="mTit">Tienes cambios sin guardar</h3>
+    <p id="mTxt"></p>
+    <div class="mBtns">
+      <button id="mGuardar">Guardar y salir</button>
+      <button class="ghost" id="mDescartar">Salir sin guardar</button>
+      <button class="ghost" id="mCancelar">Seguir editando</button>
+    </div>
+    <p class="msg" id="mMsg"></p>
+  </div>
+</div>
 
 <div class="bar">
   <div class="cell"><span class="n" id="kTons">—</span><span class="l">TONS ingresadas</span></div>
@@ -181,6 +252,15 @@ footer strong{color:var(--ink)}
   <div class="bd"><div class="val" id="validador"></div></div>
 </section>
 
+<section id="refSec" class="hidden">
+  <div class="sh">
+    <h2>Referencia regional por categoría</h2>
+    <span class="note" id="refNota"></span>
+    <button class="ghost small" id="expRef" style="margin-left:auto">Exportar a Excel</button>
+  </div>
+  <div class="bd"><div id="refTbl"></div></div>
+</section>
+
 <section id="resSec" class="hidden">
   <div class="sh">
     <h2>Valorizado por subcanal y región</h2>
@@ -190,14 +270,49 @@ footer strong{color:var(--ink)}
   <div class="bd"><div id="resumen"></div></div>
 </section>
 
-<p style="text-align:center"><button class="ghost small hidden" id="toggleAdmin">Configuración de la base</button></p>
+<p style="text-align:center"><button class="ghost small hidden" id="toggleAdmin">Configuración</button></p>
 
 <section class="admin hidden" id="adminBox">
-  <div class="sh"><h2>Configuración de la base</h2></div>
+  <div class="sh"><h2>Configuración — solo administrador</h2></div>
   <div class="bd">
+    <h3>Ventana de registro</h3>
+    <p class="note">Fuera de estas fechas, los gerentes solo pueden consultar. El bloqueo es automático.</p>
+    <div class="fila">
+      <div><label for="dOpen">Apertura</label><input type="date" id="dOpen"></div>
+      <div><label for="dClose">Cierre</label><input type="date" id="dClose"></div>
+      <button id="saveFechas">Guardar fechas</button>
+      <label style="display:flex;align-items:center;gap:7px;margin:0;color:var(--adm-fg)">
+        <input type="checkbox" id="override" style="width:16px;height:16px;padding:0">
+        Permitirme editar fuera de la ventana
+      </label>
+    </div>
+    <p class="msg" id="fechasMsg"></p>
+
+    <div class="emg" id="emgBox">
+      <p class="tit">Apertura de emergencia</p>
+      <p class="note" style="margin-top:4px">Habilita la edición para todos los gerentes aunque la ventana esté cerrada. Úsalo solo cuando haga falta y apágalo al terminar: queda registrado quién lo activó y cuándo.</p>
+      <div class="fila">
+        <button id="emgOn">Abrir edición de emergencia</button>
+        <button class="ghost hidden" id="emgOff">Cerrar edición de emergencia</button>
+        <span class="note" id="emgInfo"></span>
+      </div>
+    </div>
+
+    <hr>
+    <h3>Claves de acceso</h3>
+    <p class="note">Deja en blanco la que no quieras cambiar. Al cambiar la de gerentes, avísales: la anterior deja de funcionar.</p>
+    <div class="fila">
+      <div><label for="nKeyU">Nueva clave de gerentes</label><input type="text" id="nKeyU" autocomplete="off"></div>
+      <div><label for="nKeyA">Nueva clave de administrador</label><input type="text" id="nKeyA" autocomplete="off"></div>
+      <button id="saveClaves">Actualizar claves</button>
+    </div>
+    <p class="msg" id="clavesMsg"></p>
+
+    <hr>
+    <h3>Base del mes</h3>
     <p class="note">Abre un CSV o pega <strong>Tbl_Live_SO</strong> con encabezados. Se resume por celda y Format Flavor antes de guardarse.</p>
     <textarea id="raw" placeholder="Pega aquí la tabla desde Excel"></textarea>
-    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
+    <div class="fila">
       <input type="file" id="csv" accept=".csv,.txt,.tsv" style="color:var(--adm-fg);max-width:240px">
       <button id="pub">Publicar base</button>
       <button class="ghost" id="exp">Exportar ajustes</button>
@@ -211,8 +326,8 @@ footer strong{color:var(--ink)}
 
 <footer id="foot" class="hidden">
   El <strong>split por cliente</strong> es el que tiene validez para la cuota. El
-  <strong>split regional</strong> es solo referencial: sirve para estimar impacto y no alimenta
-  la cuota oficial. · Cualquier consulta, escribe al área de <strong>Sales Operations</strong>.
+  <strong>split regional</strong> es solo referencial: sirve de guía para repartir por categoría
+  y no alimenta la cuota oficial. · Cualquier consulta, escribe al área de <strong>Sales Operations</strong>.
 </footer>
 
 <script type="module">
@@ -238,13 +353,15 @@ const REQ=["SUBCANAL","REGION","SubCanalCliente","Categoria","DISTRIBUIDOR",
   "F FLAVOR","CUOTA TONS SO","IV_POR_TON_SKU","RAW_IBP_FF_TONS"];
 const SEP="\u001F";
 const CHUNK_BYTES=700000;
+const TOL=0.001;
 
 let dbF=null, base=null, meta=null;
 let saved={reg:{},cli:{},by:"",at:""};
 let local={reg:{},cli:{}};
-let level="cli", me="", isAdmin=false, filtro="";
-let lastCalc=null, lastRows=null;
+let level="cli", me="", isAdmin=false, filtro="", override=false;
+let lastCalc=null, lastRows=null, lastRef=null;
 
+/* ---------- utilidades ---------- */
 function num(v){
   if(v==null) return 0;
   let s=String(v).trim().replace(/\s|'|S\/|\$/g,"");
@@ -267,7 +384,75 @@ async function sha(s){
 }
 const scIdx=s=>{const i=SC_ORDER.indexOf(String(s).trim().toUpperCase());
   return i<0?SC_ORDER.length:i;};
+const fechaLarga=iso=>{
+  if(!iso) return "";
+  const d=new Date(iso+"T12:00:00");
+  return d.toLocaleDateString("es-PE",{weekday:"long",day:"numeric",month:"long"});
+};
 
+/* ---------- ventana de registro ---------- */
+function ventana(){
+  if(meta && meta.emgOn===true)
+    return {estado:"forzada", editable:true};
+  if(!meta || !meta.openAt || !meta.closeAt)
+    return {estado:"sin-fechas", editable:true};
+  const ahora=new Date();
+  const ini=new Date(meta.openAt+"T00:00:00");
+  const fin=new Date(meta.closeAt+"T23:59:59");
+  const dia=86400000;
+  if(ahora<ini) return {estado:"pronto", editable:false,
+    dias:Math.ceil((ini-ahora)/dia)};
+  if(ahora>fin) return {estado:"cerrada", editable:false};
+  return {estado:"abierta", editable:true, dias:Math.ceil((fin-ahora)/dia)};
+}
+function puedeEditar(){
+  const v=ventana();
+  return v.editable || (isAdmin && override);
+}
+function pintaVentana(){
+  const v=ventana(), el=$("ventana");
+  el.classList.remove("hidden","abierta","pronto","cerrada","forzada");
+  $("vDias").classList.add("hidden");
+  if(v.estado==="forzada"){
+    el.classList.add("forzada");
+    $("vEstado").textContent="Edición habilitada por excepción";
+    $("vDetalle").textContent="Sales Operations abrió el registro fuera de la ventana"+
+      (meta.emgBy?", a solicitud. Autorizó "+meta.emgBy:"")+
+      (meta.emgAt?" el "+new Date(meta.emgAt).toLocaleString("es-PE"):"")+
+      ". Guarda tus cambios cuanto antes.";
+    return;
+  }
+  if(v.estado==="sin-fechas"){
+    el.classList.add("pronto");
+    $("vEstado").textContent="Sin fechas definidas";
+    $("vDetalle").textContent="El administrador aún no ha fijado la ventana de registro. La edición está habilitada.";
+    return;
+  }
+  if(v.estado==="abierta"){
+    el.classList.add("abierta");
+    $("vEstado").textContent="Ventana de ajuste abierta";
+    $("vDetalle").textContent="Cierra el "+fechaLarga(meta.closeAt)+". Después de esa fecha solo podrás consultar.";
+    $("vDias").classList.remove("hidden");
+    $("vDiasN").textContent=String(v.dias);
+    $("vDiasT").textContent=v.dias===1?"día restante":"días restantes";
+  } else if(v.estado==="pronto"){
+    el.classList.add("pronto");
+    $("vEstado").textContent="Ventana aún no abre";
+    $("vDetalle").textContent="Abre el "+fechaLarga(meta.openAt)+" y cierra el "+fechaLarga(meta.closeAt)+". Por ahora solo consulta.";
+    $("vDias").classList.remove("hidden");
+    $("vDiasN").textContent=String(v.dias);
+    $("vDiasT").textContent=v.dias===1?"día para abrir":"días para abrir";
+  } else {
+    el.classList.add("cerrada");
+    $("vEstado").textContent="Ventana cerrada";
+    $("vDetalle").textContent="Cerró el "+fechaLarga(meta.closeAt)+". La información quedó en solo lectura.";
+  }
+  if(isAdmin && override && !v.editable){
+    $("vDetalle").textContent += "  ·  Edición habilitada para ti como administrador.";
+  }
+}
+
+/* ---------- base agregada ---------- */
 function build(text){
   const lines=text.replace(/\r/g,"").split("\n").filter(l=>l.trim());
   if(lines.length<2) throw new Error("No hay filas que leer.");
@@ -319,8 +504,9 @@ function chunkify(part){
   return out;
 }
 
-function compute(){
-  const b=base[level], ed={...saved[level],...local[level]}, sumFF={};
+/* ---------- cálculo ---------- */
+function computeFor(lvl){
+  const b=base[lvl], ed={...saved[lvl],...local[lvl]}, sumFF={};
   for(const k in b.cells){
     const mgr = k in ed ? ed[k] : b.tot[k];
     const a=b.cells[k];
@@ -337,7 +523,34 @@ function compute(){
   }
   return {tons,iv,ed};
 }
+const compute=()=>computeFor(level);
 
+/* Referencia: lo que el split regional asignó por región y categoría,
+   contra lo que hoy suma el split por cliente. */
+function referencia(){
+  const R=computeFor("reg"), C=computeFor("cli");
+  const reg={}, cli={}, regiones=new Set();
+  for(const k in base.reg.cells){
+    const p=k.split(SEP), kk=p[1]+SEP+p[2];
+    regiones.add(p[1]);
+    reg[kk]=(reg[kk]||0)+(R.tons[k]||0);
+  }
+  for(const k in base.cli.cells){
+    const p=k.split(SEP), kk=p[1]+SEP+p[3];
+    regiones.add(p[1]);
+    cli[kk]=(cli[kk]||0)+(C.tons[k]||0);
+  }
+  const out=[];
+  for(const rg of [...regiones].sort((a,b)=>a.localeCompare(b,"es")))
+    for(const ct of CATS){
+      const kk=rg+SEP+ct, a=reg[kk]||0, b=cli[kk]||0;
+      if(a===0 && b===0) continue;
+      out.push({rg, ct, regional:a, cliente:b, dif:b-a});
+    }
+  return out;
+}
+
+/* ---------- filas ---------- */
 const colDefs=()=>{const o=[];for(const s of SUBS)for(const c of CATS)o.push({c,s});return o;};
 function rowsOf(){
   const b=base[level], byRow=new Map();
@@ -360,7 +573,6 @@ function rowsOf(){
   if(filtro) arr=arr.filter(r=>String(r.head[1])===filtro);
   return arr;
 }
-
 function fillRegiones(){
   const set=new Set();
   for(const lv of ["reg","cli"])
@@ -372,13 +584,16 @@ function fillRegiones(){
   if(arr.includes(prev)) sel.value=prev; else { sel.value=""; filtro=""; }
 }
 
+/* ---------- render ---------- */
 function draw(){
   if(!base) return;
+  const editable=puedeEditar();
   const calc=compute(); lastCalc=calc;
   const {iv,ed}=calc;
   const b=base[level], cols=colDefs(), rws=rowsOf();
   lastRows=rws;
   const heads = level==="reg" ? ["Subcanal","Región"] : ["Subcanal","Región","Distribuidor"];
+  const dis = editable ? "" : " disabled";
 
   let h='<table><thead><tr class="g"><th class="k" colspan="'+heads.length+'"></th>'+
     '<th class="let" colspan="3">LET — toneladas y soles</th>'+
@@ -386,7 +601,6 @@ function draw(){
   heads.forEach(x=>h+='<th class="k">'+x+'</th>');
   cols.forEach(c=>h+='<th class="'+(c.s==="LET"?"let":"may")+'">'+esc(c.c)+'</th>');
   h+='<th>Total</th></tr></thead><tbody>';
-
   const ct=cols.map(()=>0), cvv=cols.map(()=>0);
   let gt=0, gv=0;
   for(const r of rws){
@@ -399,7 +613,7 @@ function draw(){
       const sv = iv[k]||0;
       rt+=v; ct[i]+=v; rv+=sv; cvv[i]+=sv;
       h+='<td class="'+cls+'"><input class="c'+(k in local[level]?" dirty":"")+
-        '" data-k="'+esc(k)+'" value="'+v.toFixed(3)+'" inputmode="decimal">'+
+        '" data-k="'+esc(k)+'" value="'+v.toFixed(3)+'" inputmode="decimal"'+dis+'>'+
         '<span class="iv">S/ '+fK(sv)+'</span></td>';
     });
     gt+=rt; gv+=rv;
@@ -412,6 +626,7 @@ function draw(){
   $("grid").innerHTML=h;
   $("filtroInfo").textContent = filtro ? rws.length+" filas en "+filtro : rws.length+" filas";
 
+  /* validador por categoría */
   const ibpCat={}, inCat={};
   for(const k in b.cells){
     const p=k.split(SEP), cat = level==="reg"?p[2]:p[3];
@@ -426,13 +641,61 @@ function draw(){
   for(const c of CATS){
     const a=ibpCat[c]||0, bb=inCat[c]||0, d=bb-a;
     ti+=a; tn+=bb;
-    v+='<tr class="'+(Math.abs(d)>0.001?"bad":"")+'"><td class="k">'+esc(c)+'</td><td>'+
+    v+='<tr class="'+(Math.abs(d)>TOL?"bad":"")+'"><td class="k">'+esc(c)+'</td><td>'+
       f1(a)+'</td><td>'+f1(bb)+'</td><td class="d">'+f1(d)+'</td></tr>';
   }
   v+='</tbody><tfoot><tr><td class="k">Total</td><td>'+f1(ti)+'</td><td>'+f1(tn)+
     '</td><td class="d">'+f1(tn-ti)+'</td></tr></tfoot></table>';
   $("validador").innerHTML=v;
 
+  /* referencia regional por categoría */
+  if(level!=="cli"){ $("refSec").classList.add("hidden"); lastRef=[]; }
+  else {
+  const ref=referencia(); lastRef=ref;
+  $("refSec").classList.remove("hidden");
+  const porRg=new Map();
+  for(const x of ref){
+    if(!porRg.has(x.rg)) porRg.set(x.rg,{});
+    porRg.get(x.rg)[x.ct]=x;
+  }
+  const celdaRef=(x)=>{
+    if(!x) return '<td class="rc vacia">—</td>';
+    const cls = Math.abs(x.dif)<=TOL ? "cuadra" : (x.dif>0 ? "exceso" : "falta");
+    const txt = Math.abs(x.dif)<=TOL ? "Cuadra"
+      : (x.dif>0 ? "Sobran "+f1(x.dif) : "Faltan "+f1(-x.dif));
+    return '<td class="rc '+cls+'"><b>'+txt+'</b><span>llevas '+
+      f1(x.cliente)+' de '+f1(x.regional)+'</span></td>';
+  };
+  let g='<table><thead><tr><th class="k">Región</th>';
+  CATS.forEach(c=>g+='<th>'+esc(c)+'</th>');
+  g+='<th class="tot">Total región</th></tr></thead><tbody>';
+  const colA=CATS.map(()=>0), colB=CATS.map(()=>0);
+  for(const [rg,cols] of [...porRg.entries()].sort((a,b)=>a[0].localeCompare(b[0],"es"))){
+    g+='<tr><td class="k">'+esc(rg)+'</td>';
+    let ra=0, rb=0;
+    CATS.forEach((c,i)=>{
+      const x=cols[c];
+      if(x){ ra+=x.regional; rb+=x.cliente; colA[i]+=x.regional; colB[i]+=x.cliente; }
+      g+=celdaRef(x);
+    });
+    g+=celdaRef({regional:ra, cliente:rb, dif:rb-ra}).replace('class="rc','class="rc tot');
+    g+='</tr>';
+  }
+  g+='</tbody><tfoot><tr><td class="k">Total</td>';
+  CATS.forEach((c,i)=>g+=celdaRef({regional:colA[i], cliente:colB[i], dif:colB[i]-colA[i]}));
+  const ta=colA.reduce((a,b)=>a+b,0), tb=colB.reduce((a,b)=>a+b,0);
+  g+=celdaRef({regional:ta, cliente:tb, dif:tb-ta}).replace('class="rc','class="rc tot');
+  g+='</tr></tfoot></table>'+
+     '<div class="leyenda">'+
+     '<span>Objetivo: lo que asignaste en el split regional por región y categoría.</span>'+
+     '<span><i style="background:var(--warn-rule)"></i>Falta repartir</span>'+
+     '<span><i style="background:var(--bad)"></i>Repartiste de más</span>'+
+     '</div>';
+  $("refTbl").innerHTML=g;
+  $("refNota").textContent = "Cuánto de cada categoría te queda por repartir, según lo que asignaste en el split regional.";
+  }
+
+  /* valorizado por subcanal y región */
   if(level==="cli"){
     $("resSec").classList.remove("hidden");
     const res=new Map();
@@ -443,29 +706,31 @@ function draw(){
     const arr=[...res.entries()].map(([k,val])=>{const p=k.split(SEP);return {sc:p[0],rg:p[1],val};});
     arr.sort((a,b)=>{const d=scIdx(a.sc)-scIdx(b.sc); if(d) return d;
       return a.rg.localeCompare(b.rg,"es");});
-    let g='<table><thead><tr><th class="k">Subcanal</th><th class="k">Región</th>'+
+    let q='<table><thead><tr><th class="k">Subcanal</th><th class="k">Región</th>'+
       '<th>Valorizado S/</th></tr></thead><tbody>';
     let tv=0;
     for(const x of arr){ tv+=x.val;
-      g+='<tr><td class="k">'+esc(x.sc)+'</td><td class="k">'+esc(x.rg)+'</td><td>'+f0(x.val)+'</td></tr>'; }
-    g+='</tbody><tfoot><tr><td class="k" colspan="2">Total</td><td>'+f0(tv)+'</td></tr></tfoot></table>';
-    $("resumen").innerHTML=g;
+      q+='<tr><td class="k">'+esc(x.sc)+'</td><td class="k">'+esc(x.rg)+'</td><td>'+f0(x.val)+'</td></tr>'; }
+    q+='</tbody><tfoot><tr><td class="k" colspan="2">Total</td><td>'+f0(tv)+'</td></tr></tfoot></table>';
+    $("resumen").innerHTML=q;
   } else $("resSec").classList.add("hidden");
 
+  /* barra */
   $("kTons").textContent=f1(gt);
   $("kIV").textContent="S/ "+fK(gv);
   const dif=tn-ti;
   $("kDif").textContent=f1(dif);
-  $("cDif").classList.toggle("off",Math.abs(dif)>0.001);
-  $("cDif").classList.toggle("good",Math.abs(dif)<=0.001);
+  $("cDif").classList.toggle("off",Math.abs(dif)>TOL);
+  $("cDif").classList.toggle("good",Math.abs(dif)<=TOL);
   const pend=Object.keys(local.reg).length+Object.keys(local.cli).length;
   $("kPend").textContent=String(pend);
-  $("save").disabled = pend===0 || !me;
+  $("save").disabled = pend===0 || !me || !editable;
+  $("undo").disabled = pend===0;
   $("levelNote").textContent = level==="cli"
     ? "Este es el split que tiene validez para la cuota. Escribe las toneladas y los soles se recalculan al salir de la celda."
-    : "Referencial: sirve para estimar el impacto regional y no alimenta la cuota oficial. Lo que se toma como cuota es el split por cliente.";
+    : "Referencial: no alimenta la cuota oficial, pero define cuánto de cada categoría te toca repartir por región en el split por cliente.";
 
-  document.querySelectorAll("input.c").forEach(i=>{
+  if(editable) document.querySelectorAll("input.c").forEach(i=>{
     i.addEventListener("change",()=>{
       const k=i.dataset.k, val=num(i.value);
       if(Math.abs(val-(base[level].tot[k]||0))<1e-9 && !(k in saved[level])) delete local[level][k];
@@ -473,8 +738,10 @@ function draw(){
       draw();
     });
   });
+  pintaVentana();
 }
 
+/* ---------- exportar ---------- */
 function csvDump(name,head,data){
   const q=v=>{const s=String(v??"");return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
   const txt=head.map(q).join(";")+"\n"+data.map(r=>r.map(q).join(";")).join("\n");
@@ -503,6 +770,11 @@ function exportGrid(){
   }
   csvDump((level==="cli"?"split_cliente":"split_regional")+".csv",head,data);
 }
+function exportRef(){
+  csvDump("referencia_regional.csv",
+    ["REGION","CATEGORIA","OBJETIVO REGIONAL TONS","REPARTIDO POR CLIENTE TONS","PENDIENTE"],
+    lastRef.map(x=>[x.rg,x.ct,x.regional.toFixed(3),x.cliente.toFixed(3),(-x.dif).toFixed(3)]));
+}
 function exportResumen(){
   const b=base[level], {iv}=lastCalc, res=new Map();
   for(const k in b.cells){ const p=k.split(SEP), rk=p[0]+SEP+p[1];
@@ -514,6 +786,7 @@ function exportResumen(){
     arr.map(r=>[r[0],r[1],r[2].toFixed(2)]));
 }
 
+/* ---------- Firestore ---------- */
 async function readPart(name){
   const snap=await getDocs(collection(dbF,name));
   if(snap.empty) return null;
@@ -541,12 +814,21 @@ async function writePart(name,chunks,label){
     if(isNaN(n)||n>=chunks.length) await deleteDoc(doc(dbF,name,d.id));
   }
 }
+async function mergeMeta(campos){
+  const ref=doc(dbF,"cfg","meta");
+  const cur=(await getDoc(ref)).data()||{};
+  const nuevo={...cur,...campos};
+  await setDoc(ref,nuevo);
+  meta=nuevo;
+  return nuevo;
+}
 function info(){
   $("lastInfo").textContent = saved.at
     ? "Último guardado: "+(saved.by||"alguien")+", "+new Date(saved.at).toLocaleString("es-PE")
     : "Sin ajustes guardados.";
 }
 async function save(){
+  if(!puedeEditar()){ alert("La ventana de registro está cerrada."); return; }
   const btn=$("save"); btn.disabled=true; btn.textContent="Guardando…";
   try{
     const ref=doc(dbF,"ajustes","actual");
@@ -560,6 +842,7 @@ async function save(){
   btn.textContent="Guardar cambios"; draw();
 }
 
+/* ---------- eventos ---------- */
 $("save").onclick=save;
 $("undo").onclick=()=>{local={reg:{},cli:{}};draw();};
 $("tReg").onclick=()=>setLevel("reg");
@@ -572,8 +855,66 @@ function setLevel(l){
 }
 $("filtro").addEventListener("change",e=>{ filtro=e.target.value; draw(); });
 $("expGrid").onclick=exportGrid;
+$("expRef").onclick=exportRef;
 $("expRes").onclick=exportResumen;
 $("toggleAdmin").onclick=()=>$("adminBox").classList.toggle("hidden");
+$("override").addEventListener("change",e=>{ override=e.target.checked; draw(); });
+
+function pintaEmg(){
+  const on = !!(meta && meta.emgOn);
+  $("emgBox").classList.toggle("on",on);
+  $("emgOn").classList.toggle("hidden",on);
+  $("emgOff").classList.toggle("hidden",!on);
+  $("emgInfo").textContent = on
+    ? "Activa desde el "+(meta.emgAt?new Date(meta.emgAt).toLocaleString("es-PE"):"—")+
+      (meta.emgBy?" · "+meta.emgBy:"")
+    : "Apagada. Rige la ventana de fechas.";
+}
+$("emgOn").onclick=async()=>{
+  if(!confirm("Se habilitará la edición para todos los gerentes aunque la ventana esté cerrada. ¿Continuar?")) return;
+  try{
+    await mergeMeta({emgOn:true, emgBy:me, emgAt:new Date().toISOString()});
+    pintaEmg(); draw();
+  }catch(e){ alert("No se pudo activar: "+(e.message||e)); }
+};
+$("emgOff").onclick=async()=>{
+  try{
+    await mergeMeta({emgOn:false});
+    pintaEmg(); draw();
+  }catch(e){ alert("No se pudo apagar: "+(e.message||e)); }
+};
+
+$("saveFechas").onclick=async()=>{
+  const m=$("fechasMsg"), o=$("dOpen").value, c=$("dClose").value;
+  if(!o||!c){ m.className="msg err"; m.textContent="Define las dos fechas."; return; }
+  if(c<o){ m.className="msg err"; m.textContent="El cierre no puede ser anterior a la apertura."; return; }
+  try{
+    await mergeMeta({openAt:o, closeAt:c});
+    m.className="msg ok";
+    m.textContent="Ventana guardada: "+fechaLarga(o)+" a "+fechaLarga(c)+".";
+    draw();
+  }catch(e){ m.className="msg err"; m.textContent="No se pudo guardar: "+(e.message||e); }
+};
+$("saveClaves").onclick=async()=>{
+  const m=$("clavesMsg"), u=$("nKeyU").value.trim(), a=$("nKeyA").value.trim();
+  if(!u&&!a){ m.className="msg err"; m.textContent="Escribe al menos una clave nueva."; return; }
+  if((u&&u.length<4)||(a&&a.length<4)){
+    m.className="msg err"; m.textContent="Cada clave debe tener al menos 4 caracteres."; return; }
+  try{
+    const campos={};
+    if(u) campos.keyU=await sha(u);
+    if(a) campos.keyA=await sha(a);
+    const nuevo={...meta,...campos};
+    if(nuevo.keyU===nuevo.keyA){
+      m.className="msg err"; m.textContent="Las dos claves no pueden ser iguales."; return; }
+    await mergeMeta(campos);
+    $("nKeyU").value=""; $("nKeyA").value="";
+    m.className="msg ok";
+    m.textContent = u&&a ? "Las dos claves fueron actualizadas."
+      : (u ? "Clave de gerentes actualizada. Avísales: la anterior dejó de funcionar."
+           : "Clave de administrador actualizada.");
+  }catch(e){ m.className="msg err"; m.textContent="No se pudo guardar: "+(e.message||e); }
+};
 $("csv").onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
   const m=$("adminMsg"), rd=new FileReader();
@@ -591,12 +932,13 @@ $("pub").onclick=async()=>{
     await setDoc(doc(dbF,"cfg","ibp"),{map:b.ibp});
     await writePart("basereg",cr,"Split regional");
     await writePart("basecli",cc,"Split por cliente");
-    await setDoc(doc(dbF,"cfg","meta"),{...meta,
-      at:new Date().toISOString(), nReg:Object.keys(b.reg.tot).length,
+    await mergeMeta({at:new Date().toISOString(), emgOn:false,
+      nReg:Object.keys(b.reg.tot).length,
       nCli:Object.keys(b.cli.tot).length, nFF:Object.keys(b.ibp).length});
     m.className="msg ok";
     m.textContent="Base publicada: "+Object.keys(b.reg.tot).length+" celdas región, "+
-      Object.keys(b.cli.tot).length+" celdas cliente, "+Object.keys(b.ibp).length+" format flavors.";
+      Object.keys(b.cli.tot).length+" celdas cliente, "+Object.keys(b.ibp).length+
+      " format flavors. Revisa que la ventana de registro esté definida para este mes.";
     $("prog").classList.add("hidden");
     $("raw").value=""; $("csv").value="";
     base=await loadBase(); showApp(); fillRegiones(); draw();
@@ -617,6 +959,46 @@ $("exp").onclick=()=>{
   csvDump("ajustes_cuota.csv",
     ["NIVEL","SUBCANAL","REGION","DISTRIBUIDOR","Categoria","SubCanalCliente","TONS"],data);
 };
+function pendientes(){ return Object.keys(local.reg).length+Object.keys(local.cli).length; }
+function cerrarSesion(){
+  local={reg:{},cli:{}};
+  me=""; isAdmin=false; override=false; base=null;
+  location.reload();
+}
+$("salir").onclick=()=>{
+  const n=pendientes();
+  if(n===0){ cerrarSesion(); return; }
+  $("mMsg").textContent="";
+  $("mTit").textContent = n===1 ? "Tienes 1 cambio sin guardar"
+                                : "Tienes "+n+" cambios sin guardar";
+  $("mTxt").textContent = puedeEditar()
+    ? "Si sales sin guardar, esos ajustes se pierden y nadie más los verá."
+    : "La ventana de registro está cerrada, así que ya no se pueden guardar. Al salir se pierden.";
+  $("mGuardar").classList.toggle("hidden", !puedeEditar());
+  $("modal").classList.remove("hidden");
+};
+$("mCancelar").onclick=()=>$("modal").classList.add("hidden");
+$("mDescartar").onclick=()=>{ $("modal").classList.add("hidden"); cerrarSesion(); };
+$("mGuardar").onclick=async()=>{
+  const m=$("mMsg"); m.className="msg"; m.textContent="Guardando…";
+  $("mGuardar").disabled=true; $("mDescartar").disabled=true;
+  try{
+    const ref=doc(dbF,"ajustes","actual");
+    const cur=(await getDoc(ref)).data()||{reg:{},cli:{}};
+    await setDoc(ref,{reg:{...(cur.reg||{}),...local.reg},cli:{...(cur.cli||{}),...local.cli},
+      by:me, at:new Date().toISOString()});
+    local={reg:{},cli:{}};
+    cerrarSesion();
+  }catch(e){
+    m.className="msg err"; m.textContent="No se pudo guardar: "+(e&&e.message||e)+". Puedes reintentar o salir sin guardar.";
+    $("mGuardar").disabled=false; $("mDescartar").disabled=false;
+  }
+};
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && !$("modal").classList.contains("hidden"))
+    $("modal").classList.add("hidden");
+});
+
 window.addEventListener("beforeunload",e=>{
   if(Object.keys(local.reg).length+Object.keys(local.cli).length>0){e.preventDefault();e.returnValue="";}
 });
@@ -627,9 +1009,16 @@ function showApp(){
   $("main").classList.remove("hidden");
   $("foot").classList.remove("hidden");
   $("whoAmI").textContent = me + (isAdmin ? " · administrador" : "");
-  if(isAdmin) $("toggleAdmin").classList.remove("hidden");
+  if(isAdmin){
+    $("toggleAdmin").classList.remove("hidden");
+    if(meta && meta.openAt) $("dOpen").value=meta.openAt;
+    if(meta && meta.closeAt) $("dClose").value=meta.closeAt;
+    pintaEmg();
+  }
+  pintaVentana();
 }
 
+/* ---------- arranque ---------- */
 $("gGo").onclick=async()=>{
   const m=$("gMsg"); m.className="msg";
   const nm=$("gName").value.trim(), kv=$("gKey").value;
@@ -643,6 +1032,9 @@ $("gGo").onclick=async()=>{
     if(isAdmin){ $("gate").classList.add("hidden"); $("app").classList.remove("hidden");
       $("whoAmI").textContent=me+" · administrador";
       $("toggleAdmin").classList.remove("hidden"); $("adminBox").classList.remove("hidden");
+      if(meta.openAt) $("dOpen").value=meta.openAt;
+      if(meta.closeAt) $("dClose").value=meta.closeAt;
+      pintaEmg();
     } else { m.className="msg err"; m.textContent="Todavía no hay una base publicada. Avisa a Sales Operations."; }
     return;
   }
@@ -652,6 +1044,10 @@ $("gGo").onclick=async()=>{
     saved = d?{reg:d.reg||{},cli:d.cli||{},by:d.by||"",at:d.at||""}:{reg:{},cli:{},by:"",at:""};
     info(); draw();
   }, ()=>banner("Se perdió la conexión con los datos compartidos. Recarga la página."));
+  onSnapshot(doc(dbF,"cfg","meta"), snap=>{
+    if(snap.exists()){ meta=snap.data(); pintaVentana();
+      if(isAdmin) pintaEmg(); if(base) draw(); }
+  }, ()=>{});
   info(); draw();
 };
 $("sGo").onclick=async()=>{
